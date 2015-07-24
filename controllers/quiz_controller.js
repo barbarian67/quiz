@@ -14,12 +14,24 @@ exports.load = function(req, res, next, quizId) {
 
 // GET /quizes
 exports.index = function(req, res) {
-  models.Quiz.findAll().then(
-    function(quizes) {
-      res.render('quizes/index', { quizes: quizes});
+  if (!req.query.search) { 
+    models.Quiz.findAll().then(function(quizes){
+      res.render( 'quizes/index.ejs', { quizes: quizes});
     }
-  ).catch(function(error) { next(error);})
-};
+    ).catch(function(error) {next(error);})
+  } else {
+    //Jugando con split y join se cambian los espacios en blanco por %
+    //Comparando mayúsculas con mayúsculas soslayamos los problemas que 
+    //pueda dar Postgress que tiene identificadores case sensitive
+    models.Quiz.findAll({where: ["upper(pregunta) like ?", "%"+req.query.search.toUpperCase().split(" ").join("%")+"%"]
+                        ,order:"upper(pregunta) ASC"})
+    .then(
+    function(quizes) {
+        res.render( 'quizes/index.ejs', {quizes: quizes});
+      }
+    ).catch(function(error) {next(error);})
+  };
+}
 
 // GET /quizes/:id
 exports.show = function(req, res) {
@@ -36,5 +48,4 @@ exports.answer = function(req, res) {
 };
 exports.author = function(req, res){
 	res.render('author',{autor:'Jaime Canillas Galiano'});
-
 };
