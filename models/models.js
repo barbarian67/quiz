@@ -34,11 +34,11 @@ exports.Quiz = Quiz; // exportar definición de tabla Quiz
 sequelize.sync().then(function() {
   // then(..) ejecuta el manejador una vez creada la tabla
   Quiz.count().then(function (count){
-    if(count === 0) {   // la tabla se inicializa solo si está vacía
+    if(count === 0) {   // la tabla se inicializa sólo si está vacía
       Quiz.bulkCreate( 
-        [ {pregunta: 'Capital de Italia',   respuesta: 'Roma'},
-          {pregunta: 'Capital de Portugal', respuesta: 'Lisboa'},
-          {pregunta: '¿Dónde nació Conan?', respuesta: 'Cimmeria'}
+        [ {pregunta: 'Capital de Italia',   respuesta: 'Roma', tema: 'Humanidades'},
+          {pregunta: 'Capital de Portugal', respuesta: 'Lisboa', tema: 'Humanidades'},
+          {pregunta: '¿Dónde nació Conan?', respuesta: 'Cimmeria', tema: 'Ocio'}
         ]
       ).then(function(){console.log('Base de datos inicializada')});
     };
