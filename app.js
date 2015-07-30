@@ -41,6 +41,21 @@ app.use(function(req, res, next) {
   next();
 });
 
+app.use (function (req,res,next){
+  if (req.session.user){
+      var momento_actual = new Date();
+      var momento_ultimo = new Date(req.session.user.momento_ultimo);
+      if ((momento_actual - momento_ultimo) >2*60*1000) {
+        delete req.session.user;
+        req.session.errors=[{"message":"Su sessión ha finalizado"}];
+        res.redirect("/login");} 
+      else{
+        req.session.user.momento_ultimo = new Date();
+      }
+  }
+  next();
+});
+
 app.use('/', routes);
 //app.use('/users', users);
 
